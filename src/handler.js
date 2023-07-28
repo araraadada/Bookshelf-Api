@@ -9,14 +9,14 @@ const addBookHandler = (request, h) =>{
         summary,
         publisher = 0,
         pageCount = 0,
-        readPage = 0, 
+        readPage = 0,
+        finished = false, 
         reading = false
     } = request.payload;
 
     const id = nanoid(16);
     const insertedAt = new Date();
     const updateAt = insertedAt;
-    let finished = false;
 
     const newBook = {
         id,
