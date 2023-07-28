@@ -8,11 +8,11 @@ const addBookHandler = (request, h) =>{
         year,
         author,
         summary,
-        publisher = 0,
-        pageCount = 0,
-        readPage = 0,
-        finished = false, 
-        reading = false
+        publisher,
+        pageCount,
+        readPage,
+        finished, 
+        reading
     } = request.payload;
 
     const id = nanoid(16);
@@ -75,11 +75,11 @@ const getAllBooks = (request, h) => {
         name: book.name,
         publisher: book.publisher,
     }));
+
     const response = h.response({
         status: 'success',
         data: {
-            books,
-            hasilMap
+            books: hasilMap,
         },
     });
     response.code(200);
@@ -98,12 +98,10 @@ const detailsBook = (request, h) => {
             },
         };
     }
-    const response = h.response({
+    return h.response({
         status: 'fail',
         message: 'Buku tidak ditemukan'
-    });
-    response.code(404);
-    return response;
+    }).code(404);
 };
 
 const updatedBook = (request, h) => {
@@ -114,11 +112,11 @@ const updatedBook = (request, h) => {
         year,
         author,
         summary,
-        publisher = 0,
-        pageCount = 0,
-        readPage = 0, 
-        reading = false,
-        finished = false
+        publisher,
+        pageCount,
+        readPage, 
+        reading,
+        finished
     } = request.payload;
     const updateAt = new Date().toISOString();
     const insertedAt = updateAt;
