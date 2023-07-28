@@ -56,12 +56,21 @@ const addBookHandler = (request, h) =>{
     return response;
 }
 
-const getAllBooks = () => ({
-    status: 'success',
-    data: {
-        books,
-    },
-});
+const getAllBooks = (request, h) => {
+    const mapBooks = books.map(book => ({
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+    }));
+
+    const response = h.response({
+        status:'success',
+        data : mapBooks,
+    });
+    response.code(200);
+    return response;
+}
+
 
 const detailsBook = (request, h) => {
     const {id} = request.params;
@@ -94,13 +103,13 @@ const updatedBook = (request, h) => {
         publisher = 0,
         pageCount = 0,
         readPage = 0, 
-        reading = false
+        reading = false,
+        finished = false
     } = request.payload;
     const updateAt = new Date().toISOString();
-    let finished = false;
 
     const index = books.findIndex((book) => book.id === id);
-    if (index !== 1) {
+    if (index !== -1) {
         books[index] = {
             ...books[index],
             id,
@@ -127,5 +136,27 @@ const updatedBook = (request, h) => {
         message:'Gagal memperbarui buku'
     });
     response.code(400);
+    return response;
 }
-module.exports = {addBookHandler, getAllBooks, detailsBook, updatedBook};
+
+const deleteBooks = (request, h) => {
+    const {id} = request.params;
+
+    const index = books.findIndex((book) => book.id === id);
+    if (index !== -1) {
+        books.splice(index, 1);
+        const response = h.response({
+            status:'success',
+            message: 'Buku berhasil dihapus',
+        });
+        response.code(200);
+        return response;
+    }
+    const response = h.response({
+        status: 'fail',
+        message: 'Buku gagal dihapus. Id tidak ditemukan',
+      });
+      response.code(404);
+      return response;
+}
+module.exports = {addBookHandler, getAllBooks, detailsBook, updatedBook, deleteBooks};
